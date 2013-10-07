@@ -113,6 +113,29 @@ config UNUSED_SYMBOLS
 	  you really need it, and what the merge plan to the mainline kernel for
 	  your module is.
 
+config MAGIC_SYSRQ
+	bool "Magic SysRq key"
+	depends on !UML
+	help
+	  If you say Y here, you will have some control over the system even
+	  if the system crashes for example during kernel debugging (e.g., you
+	  will be able to flush the buffer cache to disk, reboot the system
+	  immediately or dump some status information). This is accomplished
+	  by pressing various keys while holding SysRq (Alt+PrintScreen). It
+	  also works on a serial console (on PC hardware at least), if you
+	  send a BREAK and then within 5 seconds a command keypress. The
+	  keys are documented in <file:Documentation/sysrq.txt>. Don't say Y
+	  unless you really know what this hack does.
+
+config MAGIC_SYSRQ_DEFAULT_ENABLE
+	hex "Enable magic SysRq key functions by default"
+	depends on MAGIC_SYSRQ
+	default 0x1
+	help
+	  Specifies which SysRq key functions are enabled by default.
+	  This may be set to 1 or 0 to enable or disable them all, or
+	  to a bitmask as described in Documentation/sysrq.txt.
+
 config DEBUG_FS
 	bool "Debug Filesystem"
 	help
