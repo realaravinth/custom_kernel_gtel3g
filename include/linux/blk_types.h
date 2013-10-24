@@ -181,6 +181,7 @@ enum rq_flag_bits {
 	__REQ_URGENT,		/* urgent request */
 	__REQ_KERNEL, 		/* direct IO to kernel pages */
 	__REQ_PM,		/* runtime pm request */
+	__REQ_END,		/* last of chain of requests */
 	__REQ_NR_BITS,		/* stops here */
 };
 
@@ -210,28 +211,29 @@ enum rq_flag_bits {
 #define REQ_NOMERGE_FLAGS \
 	(REQ_NOMERGE | REQ_STARTED | REQ_SOFTBARRIER | REQ_FLUSH | REQ_FUA)
 
-#define REQ_RAHEAD		(1 << __REQ_RAHEAD)
-#define REQ_THROTTLED		(1 << __REQ_THROTTLED)
+#define REQ_RAHEAD		(1ULL << __REQ_RAHEAD)
+#define REQ_THROTTLED		(1ULL << __REQ_THROTTLED)
 
-#define REQ_SORTED		(1 << __REQ_SORTED)
-#define REQ_SOFTBARRIER		(1 << __REQ_SOFTBARRIER)
-#define REQ_FUA			(1 << __REQ_FUA)
-#define REQ_NOMERGE		(1 << __REQ_NOMERGE)
-#define REQ_STARTED		(1 << __REQ_STARTED)
-#define REQ_DONTPREP		(1 << __REQ_DONTPREP)
-#define REQ_QUEUED		(1 << __REQ_QUEUED)
-#define REQ_ELVPRIV		(1 << __REQ_ELVPRIV)
-#define REQ_FAILED		(1 << __REQ_FAILED)
-#define REQ_QUIET		(1 << __REQ_QUIET)
-#define REQ_PREEMPT		(1 << __REQ_PREEMPT)
-#define REQ_ALLOCED		(1 << __REQ_ALLOCED)
-#define REQ_COPY_USER		(1 << __REQ_COPY_USER)
-#define REQ_FLUSH		(1 << __REQ_FLUSH)
-#define REQ_FLUSH_SEQ		(1 << __REQ_FLUSH_SEQ)
-#define REQ_IO_STAT		(1 << __REQ_IO_STAT)
-#define REQ_MIXED_MERGE		(1 << __REQ_MIXED_MERGE)
-#define REQ_SECURE		(1 << __REQ_SECURE)
-#define REQ_KERNEL		(1 << __REQ_KERNEL)
-#define REQ_PM			(1 << __REQ_PM)
+#define REQ_SORTED		(1ULL << __REQ_SORTED)
+#define REQ_SOFTBARRIER		(1ULL << __REQ_SOFTBARRIER)
+#define REQ_FUA			(1ULL << __REQ_FUA)
+#define REQ_NOMERGE		(1ULL << __REQ_NOMERGE)
+#define REQ_STARTED		(1ULL << __REQ_STARTED)
+#define REQ_DONTPREP		(1ULL << __REQ_DONTPREP)
+#define REQ_QUEUED		(1ULL << __REQ_QUEUED)
+#define REQ_ELVPRIV		(1ULL << __REQ_ELVPRIV)
+#define REQ_FAILED		(1ULL << __REQ_FAILED)
+#define REQ_QUIET		(1ULL << __REQ_QUIET)
+#define REQ_PREEMPT		(1ULL << __REQ_PREEMPT)
+#define REQ_ALLOCED		(1ULL << __REQ_ALLOCED)
+#define REQ_COPY_USER		(1ULL << __REQ_COPY_USER)
+#define REQ_FLUSH		(1ULL << __REQ_FLUSH)
+#define REQ_FLUSH_SEQ		(1ULL << __REQ_FLUSH_SEQ)
+#define REQ_IO_STAT		(1ULL << __REQ_IO_STAT)
+#define REQ_MIXED_MERGE		(1ULL << __REQ_MIXED_MERGE)
+#define REQ_SECURE		(1ULL << __REQ_SECURE)
+#define REQ_KERNEL		(1ULL << __REQ_KERNEL)
+#define REQ_PM			(1ULL << __REQ_PM)
+#define REQ_END			(1ULL << __REQ_END)
 
 #endif /* __LINUX_BLK_TYPES_H */
