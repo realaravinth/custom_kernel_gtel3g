@@ -153,13 +153,13 @@ void ping_unhash(struct sock *sk)
 
 	pr_debug("ping_unhash(isk=%p,isk->num=%u)\n", isk, isk->inet_num);
 	write_lock_bh(&ping_table.lock);
-	if (sk_hashed(sk)) {		
+	if (sk_hashed(sk)) {
 		hlist_nulls_del(&sk->sk_nulls_node);
 		sk_nulls_node_init(&sk->sk_nulls_node);
 		sock_put(sk);
 		isk->inet_num = 0;
 		isk->inet_sport = 0;
-		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);		
+		sock_prot_inuse_add(sock_net(sk), sk->sk_prot, -1);
 	}
 	write_unlock_bh(&ping_table.lock);
 }
