@@ -1904,7 +1904,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
 	if (addr) {
 		addr = PAGE_ALIGN(addr);
 		vma = find_vma_prev(mm, addr, &prev);
-		if (TASK_SIZE - len >= addr &&
+		if (TASK_SIZE - len >= addr && addr >= mmap_min_addr &&
 		    (!vma || addr + len <= vm_start_gap(vma)) &&
 		    (!prev || addr >= vm_end_gap(prev)))
 			return addr;
@@ -1954,7 +1954,7 @@ arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
 	if (addr) {
 		addr = PAGE_ALIGN(addr);
 		vma = find_vma_prev(mm, addr, &prev);
-		if (TASK_SIZE - len >= addr &&
+		if (TASK_SIZE - len >= addr && addr >= mmap_min_addr &&
 				(!vma || addr + len <= vm_start_gap(vma)) &&
 				(!prev || addr >= vm_end_gap(prev)))
 			return addr;
@@ -2207,21 +2207,18 @@ find_vma_prev(struct mm_struct *mm, unsigned long addr,
  * grow-up and grow-down cases.
  */
 static int acct_stack_growth(struct vm_area_struct *vma,
-			    unsigned long size, unsigned long grow)
+			     unsigned long size, unsigned long grow)
 {
 	struct mm_struct *mm = vma->vm_mm;
 	struct rlimit *rlim = current->signal->rlim;
-	unsigned long new_start, actual_size;
+	unsigned long new_start;
 
 	/* address space limit tests */
 	if (!may_expand_vm(mm, grow))
 		return -ENOMEM;
 
 	/* Stack limit test */
-	actual_size = size;
-	if (size && (vma->vm_flags & (VM_GROWSUP | VM_GROWSDOWN)))
-		actual_size -= PAGE_SIZE;
-	if (actual_size > ACCESS_ONCE(rlim[RLIMIT_STACK].rlim_cur))
+	if (size > ACCESS_ONCE(rlim[RLIMIT_STACK].rlim_cur))
 		return -ENOMEM;
 
 	/* mlock limit tests */
@@ -2273,6 +2270,21 @@ int expand_upwards(struct vm_area_struct *vma, unsigned long address)
 	address &= PAGE_MASK;
 	address += PAGE_SIZE;
 	if (!address)
+		return -ENOMEM;
+
+	/* Enforce stack_guard_gap */
+	gap_addr = address + stack_guard_gap;
+	if (gap_addr < address)
+		return -ENOMEM;
+	next = vma->vm_next;
+	if (next && next->vm_start < gap_addr) {
+		if (!(next->vm_flags & VM_GROWSUP))
+			return -ENOMEM;
+		/* Check that both stack segments have the same anon_vma? */
+	}
+
+	/* We must make sure the anon_vma is allocated. */
+	if (unlikely(anon_vma_prepare(vma)))
 		return -ENOMEM;
 
 	/* Enforce stack_guard_gap */
@@ -2347,7 +2359,7 @@ int expand_downwards(struct vm_area_struct *vma,
 				   unsigned long address)
 {
 	struct vm_area_struct *prev;
-	unsigned long gap_addr;	
+	unsigned long gap_addr;
 	int error;
 
 	address &= PAGE_MASK;
