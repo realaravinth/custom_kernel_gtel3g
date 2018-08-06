@@ -419,12 +419,9 @@ EXPORT_SYMBOL_GPL(tty_ldisc_flush);
 
 static void tty_set_termios_ldisc(struct tty_struct *tty, int num)
 {
-	mutex_lock(&tty->termios_mutex);
+	down_write(&tty->termios_rwsem);
 	tty->termios.c_line = num;
-	mutex_unlock(&tty->termios_mutex);
-
-	tty->disc_data = NULL;
-	tty->receive_room = 0;
+	up_write(&tty->termios_rwsem);
 }
 
 /**
