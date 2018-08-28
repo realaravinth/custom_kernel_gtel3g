@@ -310,12 +310,6 @@ config VIRT_TO_BUS
 config MMU_NOTIFIER
 	bool
 
-config PER_THREAD_VMA_CACHE
-	bool "Per thread vma cache support"
-	default n
-	help
-		Enable per thread vma cache
-
 config KSM
 	bool "Enable KSM for page merging"
 	depends on MMU
@@ -622,8 +616,5 @@ config PROCESS_RECLAIM
 	 (echo file > /proc/PID/reclaim) reclaims file-backed pages only.
 	 (echo anon > /proc/PID/reclaim) reclaims anonymous pages only.
 	 (echo all > /proc/PID/reclaim) reclaims all pages.
-
-	 (echo addr size-byte > /proc/PID/reclaim) reclaims pages in
-	 (addr, addr + size-bytes) of the process.
 
 	 Any other vaule is ignored.
