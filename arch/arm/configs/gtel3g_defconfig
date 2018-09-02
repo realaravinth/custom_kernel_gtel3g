@@ -625,6 +625,7 @@ CONFIG_CPU_IDLE_GOV_MENU=y
 CONFIG_VFP=y
 CONFIG_VFPv3=y
 CONFIG_NEON=y
+CONFIG_KERNEL_MODE_NEON=y
 
 #
 # Userspace binary formats
@@ -3208,6 +3209,7 @@ CONFIG_NLS_ISO8859_1=y
 # CONFIG_NLS_MAC_TURKISH is not set
 CONFIG_NLS_UTF8=y
 # CONFIG_DLM is not set
+# CONFIG_RESTRICT_ROOTFS_SLAVE is not set
 
 #
 # Kernel hacking
